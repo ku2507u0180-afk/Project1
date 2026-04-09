@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Karnavati University Events</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Animated Background */
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(270deg, #002147, #004080, #00c6ff);
+    background-size: 600% 600%;
+    animation: gradientMove 10s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% }
+    50% { background-position: 100% }
+    100% { background-position: 0% }
+}
+
+/* Glass Card */
+.glass-card {
+    width: 350px;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    margin-bottom: 20px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Floating Inputs */
+.input-box {
+    position: relative;
+    margin: 20px 0;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    color: white;
+    outline: none;
+}
+
+.input-box label {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    transition: 0.3s;
+    opacity: 0.7;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label {
+    top: -10px;
+    font-size: 12px;
+    color: #00eaff;
+}
+
+/* Dropdown */
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 8px;
+    border: none;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #00c6ff;
+    border: none;
+    border-radius: 8px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: #00eaff;
+}
+
+/* Message */
+#message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="glass-card">
+    <h1>Karnavati University</h1>
+    <p class="subtitle">✨ Event Registration ✨</p>
+
+    <form id="registrationForm">
+
+        <div class="input-box">
+            <input type="text" id="name" required>
+            <label>Full Name</label>
+        </div>
+
+        <div class="input-box">
+            <input type="email" id="email" required>
+            <label>Email</label>
+        </div>
+        
+        <div class="input-box">
+            <input type="text" id="kuId" required>
+            <label>KU Id</label>
+        </div>
+
+        <div class="input-box">
+            <input type="text" id="enrollmentNo" required>
+            <label>Enrollment No</label>
+        </div>
+
+        <div class="input-box">
+            <input type="tel" id="mobileNo" required>
+            <label>Mobile Number</label>
+        </div>
+
+        <select id="event" required>
+            <option value="">🎉 Choose Event</option>
+            <option>Tech Fest 🚀</option>
+            <option>Cultural Fest 🎭</option>
+            <option>Sports Meet ⚽</option>
+        </select>
+
+        <button type="submit">Register Now 🚀</button>
+
+    </form>
+
+    <p id="message"></p>
+</div>
+
+<!-- Firebase + JS -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "event-registration-2344e.firebaseapp.com",
+  projectId: "event-registration-2344e",
+  storageBucket: "event-registration-2344e.appspot.com",
+  messagingSenderId: "545732797546",
+  appId: "1:545732797546:web:06c62c991cda2b7fa4d613"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const form = document.getElementById("registrationForm");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const kuId = document.getElementById("kuId").value;
+  const enrollmentNo = document.getElementById("enrollmentNo").value;
+  const mobileNo = document.getElementById("mobileNo").value;
+  const event = document.getElementById("event").value;
+
+  try {
+    await addDoc(collection(db, "registrations"), {
+      name,
+      email,
+      kuId,
+      enrollmentNo,
+      mobileNo,
+      event
+    });
+
+    document.getElementById("message").innerText = "✅ Registration Successful!";
+    form.reset();
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById("message").innerText = "❌ Error saving data";
+  }
+});
+</script>
+
+</body>
+</html>
